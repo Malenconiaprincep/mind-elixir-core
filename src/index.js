@@ -159,6 +159,7 @@ function MindElixir({
 
   this.isUndo = false
   this.bus.addListener('operation', operation => {
+    console.log(operation)
     if (this.isUndo) {
       this.isUndo = false
       return

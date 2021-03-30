@@ -48,9 +48,10 @@
     "webpack": "^4.33.0",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.3.2",
-    "webpack-dev-server": "^3.5.1"
+    "webpack-dev-server": "^3.5.1",
+    "klaw": "3.0.0"
   },
   "dependencies": {
-    "klaw": "^2.1.1"
+    "ot-json1": "^1.0.1"
   }
 }

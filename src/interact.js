@@ -173,6 +173,30 @@ export let getAllDataMd = function () {
   return mdString
 }
 
+// 更新数据
+/**
+ * 
+ * @param {*} data 
+ * @param {boolean} isSlient 静默模式
+ */
+export let setData = function(data, isSlient = true) {
+  if(data.nodeData) {
+    this.nodeData = data.nodeData
+  }
+  if(data.linkData) {
+    this.linkData = data.linkData
+  }
+  if(!isSlient) {
+    updateContent(data)
+  }
+}
+
+// 重新渲染
+export let updateContent = function() {
+  m.layout()
+  m.linkDiv()
+}
+
 /**
  * @function
  * @instance

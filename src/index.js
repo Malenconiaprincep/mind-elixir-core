@@ -18,6 +18,7 @@ import {
   getAllDataString,
   getAllData,
   getAllDataMd,
+  setData,
   scale,
   toCenter,
   focusNode,
@@ -70,6 +71,8 @@ import mobileMenu from './plugin/mobileMenu'
 
 import Bus from './utils/pubsub'
 
+import { transOTData } from './utils/ot'
+
 import './index.less'
 import './plugin/contextMenu.less'
 import './plugin/toolBar.less'
@@ -79,6 +82,8 @@ import './plugin/mobileMenu.less'
 // import { exportSvg, exportPng } from '../painter'
 
 import './iconfont/iconfont.js'
+import * as exampleData from './exampleData/1.cn'
+import { setParent } from './utils/map'
 
 // TODO MindElixirLite
 // TODO Link label
@@ -159,7 +164,11 @@ function MindElixir({
 
   this.isUndo = false
   this.bus.addListener('operation', operation => {
-    console.log(operation)
+
+    const changeset = transOTData(operation)
+
+    console.log('changeset', changeset)
+
     if (this.isUndo) {
       this.isUndo = false
       return
@@ -308,6 +317,7 @@ MindElixir.prototype = {
   getAllDataString,
   getAllData,
   getAllDataMd,
+  setData,
   scale,
   toCenter,
   focusNode,
@@ -417,15 +427,24 @@ MindElixir.example2 = example2
  * @static
  * @param {String} topic root topic
  */
-MindElixir.new = topic => ({
-  nodeData: {
-    id: generateUUID(),
-    topic: topic || 'new topic',
-    root: true,
-    children: [],
-  },
-  linkData: {},
-})
+MindElixir.new = topic => {
+  const initialData = {
+    nodeData: {
+      id: generateUUID(),
+      rIndex: 0,
+      cIndex: 0,
+      topic: topic || 'new topic',
+      root: true,
+    },
+    linkData: {},
+  }
+
+  const { id, ...rest } = initialData.nodeData
+
+  setParent(initialData.nodeData.id, rest)
+
+  return initialData
+}
 MindElixir.newNode = ({ topic }) => {
   let id = generateUUID()
   return {

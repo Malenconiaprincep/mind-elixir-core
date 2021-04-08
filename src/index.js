@@ -431,8 +431,7 @@ MindElixir.new = topic => {
   const initialData = {
     nodeData: {
       id: generateUUID(),
-      rIndex: 0,
-      cIndex: 0,
+      path: '0',
       topic: topic || 'new topic',
       root: true,
     },

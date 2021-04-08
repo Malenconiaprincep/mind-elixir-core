@@ -98,25 +98,26 @@ export let insertSibling = function (el, node) {
   let t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
-  let { grp, top } = createGroup(newNodeObj)
+  // let { grp, top } = createGroup(newNodeObj)
 
-  let children = t.parentNode.parentNode
-  children.insertBefore(grp, t.parentNode.nextSibling)
-  if (children.className === 'box') {
-    this.processPrimaryNode(grp, newNodeObj)
-    this.linkDiv()
-  } else {
-    this.linkDiv(grp.offsetParent)
-  }
-  if (!node) {
-    this.createInputDiv(top.children[0])
-  }
-  this.selectNode(top.children[0], true)
-  top.scrollIntoViewIfNeeded()
+  // let children = t.parentNode.parentNode
+  // children.insertBefore(grp, t.parentNode.nextSibling)
+  // if (children.className === 'box') {
+  //   this.processPrimaryNode(grp, newNodeObj)
+  //   this.linkDiv()
+  // } else {
+  //   this.linkDiv(grp.offsetParent)
+  // }
+  // if (!node) {
+  //   this.createInputDiv(top.children[0])
+  // }
+  // this.selectNode(top.children[0], true)
+  // top.scrollIntoViewIfNeeded()
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
     obj: newNodeObj,
+    target: nodeObj
   })
 }
 
@@ -179,10 +180,42 @@ export let addChild = function (el, node) {
 
   let newNodeObj = node || generateNewObj()
   nodeObj.expanded = true
+
+
+  // if (nodeObj.children) nodeObj.children.push(newNodeObj)
+  // else nodeObj.children = [newNodeObj]
+  // addParentLink(this.nodeData)
+  // let top = nodeEle.parentElement
+
+  // let { grp, top: newTop } = createGroup(newNodeObj)
+
+  // if (top.tagName === 'T') {
+  //   if (top.children[1]) {
+  //     top.nextSibling.appendChild(grp)
+  //   } else {
+  //     let c = $d.createElement('children')
+  //     c.appendChild(grp)
+  //     top.appendChild(createExpander(true))
+  //     top.parentElement.insertBefore(c, top.nextSibling)
+  //   }
+  //   this.linkDiv(grp.offsetParent)
+  // } else if (top.tagName === 'ROOT') {
+  //   this.processPrimaryNode(grp, newNodeObj)
+  //   top.nextSibling.appendChild(grp)
+  //   this.linkDiv()
+  // }
+  // if (!node) {
+  //   this.createInputDiv(newTop.children[0])
+  // }
+  // this.selectNode(newTop.children[0], true)
+  // newTop.scrollIntoViewIfNeeded()
+  console.timeEnd('addChild')
+
+
   this.bus.fire('operation', {
     name: 'addChild',
     obj: newNodeObj,
-    parent: nodeObj
+    target: nodeObj
   })
 }
 // uncertain link disappear sometimes??

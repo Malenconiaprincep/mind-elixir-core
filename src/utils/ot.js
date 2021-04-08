@@ -5,45 +5,75 @@ const json1 = require('ot-json1')
 
 function transOTData(data) {
   const { nodeData } = m.getAllData()
-  const { name, obj, parent } = data
+  const { name, obj, target } = data
 
   let op
+  let newnodeData
   switch (name) {
     // 从父节点插入子节点
     case 'addChild':
-      const {rIndex , cIndex} = getParent(parent.id)
-      const newrIndex = rIndex + 1
-      const newcIndex = cIndex
-      setParent(obj.id, {
-        id: parent.id,
-        rIndex: newrIndex,
-        cIndex: cIndex
-      })
+      {
+        const { path } = getParent(target.id)
+        const newpath = `${path}-0`
+        setParent(obj.id, {
+          id: target.id,
+          path: newpath,
+        })
 
-      let path = []
-      for(let i=0; i < newrIndex; i++) {
-        path.push('children')
-        if(i + 1 < newrIndex) {
-          path.push(0)
-        }
+        let otpath = []
+        const arrnewpath = newpath.split('-').slice(1)
+        arrnewpath.forEach((path, index) => {
+          otpath.push('children')
+          if(index + 1 < arrnewpath.length) {
+            otpath.push(path)
+          }
+        })
+
+        op = json1.insertOp(otpath, [{
+          id: obj.id,
+          topic: obj.topic,
+          parent: target,
+        }])
+
+        newnodeData = json1.type.apply(nodeData, op)
       }
-
-      op = json1.insertOp(path, [{
-        id: obj.id,
-        topic: obj.topic,
-        parent: parent
-      }])
-
-      const newnodeData = json1.type.apply(nodeData, op)
-      m.setData({
-        nodeData: newnodeData
-      }, false)
+      break
     case 'removeNode':
       break
     case 'moveNodeAfter':
       break
+    case 'insertSibling':
+      {
+        const { path } = getParent(target.id)
+        let newarr = path.split('-')
+        newarr[newarr.length - 1] = parseInt(newarr[newarr.length - 1]) + 1
+        const newpath = `${newarr.join('-')}`
+        setParent(obj.id, {
+          id: target.parent.id,
+          path: newpath
+        })
+
+        let otpath = []
+        const arrnewpath = newpath.split('-').slice(1)
+        arrnewpath.forEach((path, index) => {
+          otpath.push('children')
+          otpath.push(parseInt(path, 10))
+        })
+
+        op = json1.insertOp(otpath, {
+          id: obj.id,
+          topic: obj.topic,
+          parent: target.parent
+        })
+
+        newnodeData = json1.type.apply(nodeData, op)  
+      }
+      break
   }
 
+  m.setData({
+    nodeData: newnodeData
+  }, false)
   return JSON.stringify(op)
 }
 
